@@ -1,6 +1,7 @@
 from dataset import *
 from representations import *
 from classify import *
+from human_evaluation import *
 
 
 #######################################################################################################################
@@ -27,13 +28,22 @@ test_txt_bow = BOW(news_voc, test_text)
 #   something like classification
 data_name = "Newsgroup"
 sim_measure = "cosine"
-train_vectors_dict = dataset_dictionary(train_labels, train_txt_bow, limit_num, data_name)[0]
-test_label_predictions = averaged_representative_classification(train_vectors_dict, test_txt_bow, sim_measure)
+train_vectors_dict = dataset_dictionary(train_labels, train_txt_bow,  data_name, limit_num)[0]
+#test_label_predictions = averaged_representative_classification(train_vectors_dict, test_txt_bow, sim_measure)
+test_label_predictions_2 = Candidates_vs_Reference(test_txt_bow, sim_measure)
+print("How many times ref and candidate were found more similar")
+print(test_label_predictions_2)
+ranked_results = Ranking_Similaries_HE(test_label_predictions_2[1])
+print("those similarities ranked")
+print(ranked_results)
+text_for_evaluation = Sampling_texts_HE(test_text, 3)
+print("having the text for evaluation")
+print(text_for_evaluation)
 
 
 #   evaluation
 predicted_labels = []
-for lista in test_label_predictions[1]:
+for lista in test_label_predictions_2[1]: #needs to be corrected
     predicted_labels.append(lista[0])
 
 accuracy = sklearn.metrics.accuracy_score(test_labels, predicted_labels)

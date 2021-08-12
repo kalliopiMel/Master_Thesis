@@ -102,7 +102,8 @@ def dataset_dictionary(labels, texts, dataset, limit=None):
 
     print(text20_dict.keys())
     #   store the dictionary  with pickle
-    file = open('TrainText_dict_'+str(limit)+"_"+dataset, 'wb')  # create the file
+    filename = "TrainText_dict_" + str(limit) + "_" + dataset
+    file = open(filename, 'wb')  # create the file
     pickle.dump(text20_dict, file)
     file.close()
 

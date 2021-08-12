@@ -10,7 +10,7 @@ def averaged_representative_classification(train_dict_vec, test_vectors, sim_mea
     average_dict_vec = {}
     for i in train_dict_vec:  # label i in dictionary    ######### print(train_dict_vec[i])
         # average = average_vector(train_dict_vec[i])
-        average_dict_vec[i] = numpy.mean(train_dict_vec[i])
+        average_dict_vec[i] = np.mean(train_dict_vec[i])
     test_dict_vec = {}
     predictions = []
     for test_vec in test_vectors:
