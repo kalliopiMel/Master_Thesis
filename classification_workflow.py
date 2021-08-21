@@ -2,8 +2,9 @@ from dataset import *
 from representations import *
 from classify import *
 from human_evaluation import *
-import spacy
 import pickle
+import numpy as np
+from syntactic_parser import *
 
 #   20Newsgroup
 #News_dataset = read20news() # get train & test set
@@ -18,17 +19,77 @@ News_txt_bow = BOW(news_voc, News_text)
 #   something like classification
 data_name = "Newsgroup"
 sim_measure = "cosine"
-test_label_predictions = Candidates_vs_Reference(News_txt_bow, sim_measure)
+k = 2
+syntax = False
+label_predictions = Candidates_vs_Reference(News_txt_bow, sim_measure)
+file = open('reference_dict', 'wb')  # create the file
+pickle.dump(label_predictions[0], file)
+file.close()
+
+f = open('similarities_list', 'wb')  # create the
+# file
+pickle.dump(label_predictions[1], f)
+f.close()
 print("How many times ref and candidate were found more similar")
-print(test_label_predictions)
-ranked_results = Ranking_Similaries_HE(test_label_predictions[1])
+for key,value in label_predictions[0].items():
+	print(key, ':', value)
+
+
+ranked_results = sorting_similarities(label_predictions[0])
 print("those similarities ranked")
-print(ranked_results)
-text_for_evaluation = Sampling_texts_HE(News_text, 3)
+for key,value in ranked_results.items():
+	print(key, ':', value)
+
+
+text_for_evaluation = Sampling_texts_HE(News_text, k, syntax)
 print("having the text for evaluation")
-print(text_for_evaluation)
+i = 0
+for x in text_for_evaluation:
+	i+=1
+	print(x)
+print("Number of selected texts when k=", k, ": ", i)
 f = open("Human_Evaluation.txt", "wb")  #  write results in .txt file
 pickle.dump(text_for_evaluation, f)
+f.close()
+
+
+print("Same work for syntactic test")
+# and the SYNTAX part!
+syntax_BOW_text = Text_syntaxBOW(News_text, News_txt_bow)
+syntax = True
+print("How many times ref and candidate were found more similar")
+label_syntax_predictions = Candidates_vs_Reference(syntax_BOW_text, sim_measure)
+file = open('reference_synt_dict', 'wb')  # create the file
+pickle.dump(label_syntax_predictions[0], file)
+file.close()
+
+f = open('similarities_synt_list', 'wb')  # create the
+# file
+pickle.dump(label_syntax_predictions[1], f)
+f.close()
+for key,value in label_syntax_predictions[0].items():
+	print(key, ':', value)
+
+
+
+print("those similarities ranked")
+ranked_syntax_results = sorting_similarities(label_syntax_predictions[0])
+f = open('ranked_syntax_sim', 'wb')  # create the file
+pickle.dump(ranked_syntax_results, f)
+f.close()
+for key,value in ranked_syntax_results.items():
+	print(key, ':', value)
+
+
+print("having the text for evaluation")
+text_for_syntax_evaluation = Sampling_texts_HE(News_text, k, syntax)
+i = 0
+for x in text_for_syntax_evaluation:
+	i+=1
+	print(x)
+print("Number of selected texts when k=", k, ": ", i)
+f = open("Human_Syntax_Evaluation.txt", "wb")  #  write results in .txt file
+pickle.dump(text_for_syntax_evaluation, f)
 f.close()
 
 
@@ -37,7 +98,7 @@ f.close()
 #   evaluation
 predicted_labels = []
 for lista in test_label_predictions[1]: #needs to be corrected
-    predicted_labels.append(lista[0])
+	predicted_labels.append(lista[0])
 
 accuracy = sklearn.metrics.accuracy_score(News_labels, predicted_labels)
 print("accuracy score: "+accuracy)

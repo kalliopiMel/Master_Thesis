@@ -34,7 +34,7 @@ def Reference_Text():
 
 def Candidates_vs_Reference(text_list, measure):
     reference_rank = Reference_Text()
-    ranked_similarities = []
+    similarities = []
     candidate_rank = []  # in this list we count how many times a candidate text was the most similar one
     text_list_length = len(text_list)
     for i in range(0,25):
@@ -65,7 +65,7 @@ def Candidates_vs_Reference(text_list, measure):
         for j in range(text_list_length):
             if j != i:  # again we don't need the reference text
                 reference_rank[i].append([j, candidate_rank[j]])    # creating the dictionary, where key is the ref text. Every key has a relative list, containing the other texts and how many times where found more similar than other
-                ranked_similarities.append([i,j,candidate_rank[j]]) # this creates a 2D array of this form [[ref, cand*, sim*],[ref,cand*,sim*],....] where cand* is the most similar of the two candidates and the relative similarity number sim*
+                similarities.append([i,j,candidate_rank[j]]) # this creates a 2D array of this form [[ref, cand*, sim*],[ref,cand*,sim*],....] where cand* is the most similar of the two candidates and the relative similarity number sim*
 
 
         for j in range(25):  # initialise list again
@@ -80,14 +80,6 @@ def Candidates_vs_Reference(text_list, measure):
     f.close()  # closing the file
 
 
-    file = open('reference_rank', 'wb')  # create the file
-    pickle.dump(reference_rank, file)
-    file.close()
-
-    f = open('ranked_similarities', 'wb')  # create the file
-    pickle.dump(ranked_similarities, f)
-    f.close()
-
-    return reference_rank, ranked_similarities
+    return reference_rank, similarities
 
 

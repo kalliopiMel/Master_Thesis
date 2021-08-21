@@ -1,8 +1,10 @@
+from sklearn.feature_extraction.text import CountVectorizer
 import os.path
 #  syntax parser of spacy
 import spacy
 from representations import *
 import numpy as np
+import pickle
 #nlp = spacy.load("en_core_web_sm")
 #for label in nlp.get_pipe("parser").labels: # that way i can find the different labels of dependency parser
 

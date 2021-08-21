@@ -2,67 +2,80 @@ from classify import *
 import numpy as np
 
 
-def Ranking_Similaries_HE(ranked_sim):
-    # i have to transform my ranked_similarities table into an 2d array, so that iτ can βε sortεδ and useεδ for human evaluation task
-    ranked_sim = np.array(ranked_sim)
-    print(ranked_sim)
-    columnIndex = 0
-    # Sort 2D numpy array by 2nd Column
-    ranked_sim = ranked_sim[ranked_sim[:, columnIndex].argsort()]
-    #print('Sorted 2D Numpy Array')
+def sorting_similarities(sim_dict):
+    n = len(sim_dict)
+    for key in sim_dict:
+        sim_list = sim_dict[key]
+        n = len(sim_list)
+        # Traverse through all array elements
+        for i in range(n - 1):
+        # range(n) also work but outer loop will repeat one time more than needed.
+
+         # Last i elements are already in place
+            for j in range(0, n - i - 1):
+
+            # traverse the array from 0 to n-i-1
+            # Swap if the element found is greater
+            # than the next element
+                if sim_list[j][1] > sim_list[j + 1][1]:
+                    sim_list[j], sim_list[j + 1] = sim_list[j + 1], sim_list[j]
+
+    return sim_dict
 
 
-    # ranked_sim now contains the ref text, the cand text and the amount of times they were found similar
-    ranked_sim = ranked_sim.tolist()
 
-    f = open('ranked_sim', 'wb')  # create the file
-    pickle.dump(ranked_sim, f)
-    f.close()
-
-    return ranked_sim
-
-
-def Sampling_texts_HE(texts, k):
+def Sampling_texts_HE(texts, k, synt):
 #    sim_text = text_pairs
 
 # Gia kathe reference doc Pare akraies perioxes tou ranking RNK[:k], RNK[-k:] kai mesaia perioxh RNK[median-k/2:median:median+k/2]
-    infile = open('ranked_sim','rb')
-    ranked_sim = pickle.load(infile)
-    infile.close()
-    #print(ranked_sim)
-
-    rs_length = len(ranked_sim)  # number of rows of the array  https://stackoverflow.com/questions/10713004/find-length-of-2d-array-python
-    print(rs_length)
-
-    No_match = ranked_sim[k:2*k]
-    intermediate = ranked_sim[rs_length//2:rs_length//2 + k]
-    matching = ranked_sim[rs_length - 2*k:rs_length - k]
-
-    # the text similarities
+    if synt == True:
+        infile = open('ranked_syntax_sim','rb')
+        ranked_dict = pickle.load(infile)
+        infile.close()
+    else:
+        infile = open('ranked_sim','rb')
+        ranked_dict = pickle.load(infile)
+        infile.close()
+# the text similarities
     eval_texts = []
-#    No_match_l = No_match.tolist()              #transformning array to list  https://datatofish.com/numpy-array-to-list-python/
-#    intermediate_l = intermediate.tolist()
-#    matching_l = matching.tolist()
+    eval_dict = {}
 
-    for x in No_match:
-        ref = x[0]
-        cand = x[1]
-        similar = x[2]
-        eval_texts.append([texts[ref], texts[cand], similar])
+    for key in ranked_dict:
+        ranked_sim = ranked_dict[key]
+        rs_length = len(ranked_sim)  # number of rows of the array  https://stackoverflow.com/questions/10713004/find-length-of-2d-array-python
 
-    for x in intermediate:
-        ref = x[0]
-        cand = x[1]
-        similar = x[2]
-        eval_texts.append([texts[ref], texts[cand], similar])
+        No_match = ranked_sim[:k]
+        middle = rs_length//2
+        mid_k = k//2 +1
+        intermediate = ranked_sim[middle - mid_k: middle + mid_k]
+        matching = ranked_sim[-k:]
 
-    for x in matching:
-        ref = x[0]
-        cand = x[1]
-        similar = x[2]
-        eval_texts.append([texts[ref], texts[cand], similar])
+        eval_dict[key] = []
 
+        for x in No_match:
+            cand = x[0]
+            similar = x[1]
+            eval_dict[key].append([cand, similar])
+            eval_texts.append([texts[cand], similar])
 
+        for x in intermediate:
+            cand = x[0]
+            similar = x[1]
+            eval_dict[key].append([cand, similar])
+            eval_texts.append([texts[cand], similar])
+
+        for x in matching:
+            cand = x[0]
+            similar = x[1]
+            eval_dict[key].append([cand, similar])
+            eval_texts.append([texts[cand], similar])
+
+    print("The selected texts for each reference in numbers")
+    all_items = 0
+    for key, value in eval_dict.items():
+        all_items = all_items + len(eval_dict[key])
+        print(key, ':', value)
+    print("text items are ", all_items)
     return eval_texts
 
 
