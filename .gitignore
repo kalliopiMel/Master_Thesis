@@ -3,12 +3,12 @@ main.py
 matching.py
 maths.py
 testing.py
-testing_functions.py
+
 pairwise_sim_triplet.txt
 TrainText_dict_80_Newsgroup
 ranked_sim
 Human_Evaluation.txt
 msr_paraphrase_test.txt
-smallerTest.py
+smallerTests.py
 Whole_20News
 Whole_20News_Voc

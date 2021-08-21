@@ -10,7 +10,9 @@ from syntactic_parser import *
 #News_dataset = read20news() # get train & test set
 News_text = read20news()[1]  # store text of train set
 News_labels = read20news()[0]
-
+f = open("News_text", "wb")
+pickle.dump(News_text, f)
+f.close()
 
 #   make train, test representations
 news_voc = voc_20newsgroup_limited()  # load of vocabulary to use it in BoW representations
@@ -60,8 +62,16 @@ pickle.dump(text_for_evaluation[1], f)
 f.close()
 
 
-print("Same work for syntactic test")
+###########################################################################################################
+##################################			SYNTAX				###########################################
+###########################################################################################################
+
 # and the SYNTAX part!
+
+print("###########################################################################################################")
+print("###########################################################################################################")
+print("Same work for syntactic test")
+
 syntax_BOW_text = Text_syntaxBOW(News_text, News_txt_bow)
 syntax = True
 print("How many times ref and candidate were found more similar")
