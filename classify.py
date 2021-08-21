@@ -10,7 +10,7 @@ import os.path
 #   comparisons of reference text with 2 candidate texts and then keep the ranking of how many wins, each text had over the others
 
 def Reference_Text():
-    ref_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\News_Ref'
+    ref_path = 'News_Ref'
     if not os.path.exists(ref_path):
         ref_rank = {}  # the dictionary of every reference's list of similarities
         for i in range(0, 25, 5):

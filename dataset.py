@@ -17,7 +17,7 @@ import random
 def read20news():
     # 1) read 20Newsgroups dataset and load train and test set for a limited amount of data for program testing purposes
     # first i load labels(lbls) and texts(txts) for the train set and then i do the same for the test set
-    cat_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\categories'
+    cat_path = 'categories'
     if not os.path.exists(cat_path):
         cat20 = fetch_20newsgroups(subset='test').target_names
         cat = random.sample(cat20, 5)
@@ -29,8 +29,8 @@ def read20news():
     categories = pickle.load(file)
     file.close()
 
-    dataNews_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\Text_20News'
-    dataNewsLab_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\Labels_20News'
+    dataNews_path = 'Text_20News'
+    dataNewsLab_path = 'Labels_20News'
     if not os.path.exists(dataNews_path):
         test_lbls_init = []
         test_txts_init = []
@@ -62,7 +62,7 @@ def read20news():
 
 def voc_20newsgroup():
     #   i have to create my vocabulary for the corpus
-    dataNews_Whole_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\Whole_20News'
+    dataNews_Whole_path = 'Whole_20News'
     if not os.path.exists(dataNews_Whole_path):
         test_txts_temp = fetch_20newsgroups(subset='test', remove=('headers', 'footers')).data
         f = open(dataNews_Whole_path, "wb")
@@ -70,7 +70,7 @@ def voc_20newsgroup():
         f.close()
 
     #   i first set the path of vocabulary's file  https://www.btelligent.com/en/blog/best-practice-working-with-paths-in-python-part-1/
-    voc20_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\Whole_20News_Voc'
+    voc20_path = 'Whole_20News_Voc'
     #   and then i either create and save the vocabulary or load it.
     if not os.path.exists(voc20_path):
         f = open(dataNews_Whole_path, "rb")
@@ -92,9 +92,9 @@ def voc_20newsgroup():
 ###########################################################################################################
 def voc_20newsgroup_limited():
     #   i have to create my vocabulary for the corpus
-    dataNews_limited_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\Text_20News'
+    dataNews_limited_path = 'Text_20News'
     #   i first set the path of vocabulary's file  https://www.btelligent.com/en/blog/best-practice-working-with-paths-in-python-part-1/
-    voc20_limit_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\Limited_20News_Voc'
+    voc20_limit_path = 'Limited_20News_Voc'
     #   and then i either create and save the vocabulary or load it.
     if not os.path.exists(voc20_limit_path):
         f = open(dataNews_limited_path, "rb")
@@ -115,7 +115,7 @@ def voc_20newsgroup_limited():
 
 
 def MIcrosoft_Paraphrase():
-    fname = r'C:\Users\kalli\PycharmProjects\master_thesis\msr_paraphrase_test.txt'
+    fname = 'msr_paraphrase_test.txt'
     with open(fname, encoding="utf8") as f:
         content = f.readlines()
     content.remove(content[0])

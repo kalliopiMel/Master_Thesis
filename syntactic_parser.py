@@ -12,7 +12,7 @@ import pickle
 def Syntax_Voc():
     syntax_words = []
     nlp = spacy.load("en_core_web_sm")
-    voc_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\syntax_vocab'
+    voc_path = 'syntax_vocab'
     #   and then i either create and save the vocabulary or load it.
     if not os.path.exists(voc_path):    # we create  vocabulary from the different syntactic labels of the parser
         for label in nlp.get_pipe("parser").labels:
