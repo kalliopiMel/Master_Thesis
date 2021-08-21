@@ -77,7 +77,7 @@ def Sampling_texts_HE(texts, k, synt):
         all_items = all_items + len(eval_dict[key])
         print(key, ':', value)
     print("text items are ", all_items)
-    return eval_texts
+    return eval_texts, eval_dict
 
 
 # Pare ta candidate docs apo autes tis perioxes, kai pare ta tuple permutations

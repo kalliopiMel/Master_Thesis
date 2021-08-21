@@ -46,13 +46,17 @@ for key,value in ranked_results.items():
 
 text_for_evaluation = Sampling_texts_HE(News_text, k, syntax)
 print("having the text for evaluation")
+f = open("Human_Evaluation.txt", "wb")  #  write results in .txt file
+pickle.dump(text_for_evaluation[0], f)
+f.close()
 i = 0
-for x in text_for_evaluation:
+for x in text_for_evaluation[0]:
 	i+=1
 	print(x)
 print("Number of selected texts when k=", k, ": ", i)
-f = open("Human_Evaluation.txt", "wb")  #  write results in .txt file
-pickle.dump(text_for_evaluation, f)
+#the dictionary
+f = open("Human_Eval_dictionary.txt", "wb")  #  write results in .txt file
+pickle.dump(text_for_evaluation[1], f)
 f.close()
 
 
@@ -86,14 +90,19 @@ for key,value in ranked_syntax_results.items():
 
 print("having the text for evaluation")
 text_for_syntax_evaluation = Sampling_texts_HE(News_text, k, syntax)
-i = 0
-for x in text_for_syntax_evaluation:
-	i+=1
-	print(x)
+
 print("Number of selected texts when k=", k, ": ", i)
 f = open("Human_Syntax_Evaluation.txt", "wb")  #  write results in .txt file
-pickle.dump(text_for_syntax_evaluation, f)
+pickle.dump(text_for_syntax_evaluation[0], f)
 f.close()
+i = 0
+for x in text_for_syntax_evaluation[0]:
+	i+=1
+	print(x)
+f = open("Human_Syntax_Eval_dictionary.txt", "wb")  #  write results in .txt file
+pickle.dump(text_for_syntax_evaluation[1], f)
+f.close()
+
 
 
 
