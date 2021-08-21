@@ -1,8 +1,13 @@
 from classify import *
 from dataset import *
 from representations import *
+
+import spacy
+
+
 limit_num = 10
-#######################################################################################################################
+######################################################################################################################
+
 
 #   20Newsgroup
 News_dataset = read20news_limited(limit_num) # get train & test set

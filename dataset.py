@@ -1,11 +1,7 @@
 #   we import 20newsgroup for the experiments
-#   https://scikit-learn.org/0.19/modules/generated/sklearn.datasets.fetch_20newsgroups.html#sklearn.datasets.fetch_20newsgroups
 from sklearn.datasets import fetch_20newsgroups
 
 #   os.path is used to restore the already saved pickle files
-#   https://stackoverflow.com/questions/82831/how-do-i-check-whether-a-file-exists-without-exceptions
-#   https://wiki.python.org/moin/UsingPickle
-#   https://www.pitt.edu/~naraehan/python3/pickling.html
 import os.path
 
 # we import__(CountVectorizer) in order to create our vocabulary for the model to be trained from 20NewsGroup
@@ -13,45 +9,74 @@ import os.path
 from sklearn.feature_extraction.text import CountVectorizer
 
 #   pickle is used to store data in the computer
-#   https://www.journaldev.com/15638/python-pickle-example
 import pickle
+import json
+import random
 
 
-#######################################################################################################################
-#######################################################################################################################
-
-def read20news_limited(limit=None):
+def read20news():
     # 1) read 20Newsgroups dataset and load train and test set for a limited amount of data for program testing purposes
     # first i load labels(lbls) and texts(txts) for the train set and then i do the same for the test set
-    if limit is None:
-        train20_lbls = fetch_20newsgroups(subset='train').target
-        train20_txts = fetch_20newsgroups(subset='train').data
+    cat_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\categories'
+    if not os.path.exists(cat_path):
+        cat20 = fetch_20newsgroups(subset='test').target_names
+        cat = random.sample(cat20, 5)
+        print(cat)
+        f = open("categories", "wb")
+        pickle.dump(cat, f)
+        f.close()
+    file = open(cat_path, "rb")
+    categories = pickle.load(file)
+    file.close()
 
-        test20_lbls = fetch_20newsgroups(subset='test').target
-        test20_txts = fetch_20newsgroups(subset='test').data
-    else:
-        train20_lbls = fetch_20newsgroups(subset='train').target[:limit]
-        train20_txts = fetch_20newsgroups(subset='train').data[:limit]
+    dataNews_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\Text_20News'
+    dataNewsLab_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\Labels_20News'
+    if not os.path.exists(dataNews_path):
+        test_lbls_init = []
+        test_txts_init = []
+        for i in range(5):
+            test_txts_temp = fetch_20newsgroups(subset='test', remove=('headers', 'footers'), categories=[categories[i]]).data
+            length = len(test_txts_temp)
+            for j in range(5):
+                r = random.randint(0, length-1)
+                test_lbls_init.append(i)
+                test_txts_init.append(test_txts_temp[r])
+        f = open(dataNews_path, "wb")
+        pickle.dump(test_txts_init, f)
+        f.close()
+        fl = open(dataNewsLab_path, "wb")
+        pickle.dump(test_lbls_init, fl)
+        fl.close()
 
-        test20_lbls = fetch_20newsgroups(subset='test').target[:limit]
-        test20_txts = fetch_20newsgroups(subset='test').data[:limit]
+    f = open(dataNews_path, "rb")
+    test_txts = pickle.load(f)
+    f.close()
+    fl = open(dataNewsLab_path, "rb")
+    test_lbls = pickle.load(fl)
+    fl.close()
 
     #   return the discovered information
-    return [train20_lbls, train20_txts], [test20_lbls, test20_txts]
+    return test_lbls, test_txts
 
 
-###########################################################################################################
-def voc_20newsgroup(texts_train, limit=None):
+
+def voc_20newsgroup():
     #   i have to create my vocabulary for the corpus
+    dataNews_Whole_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\Whole_20News'
+    if not os.path.exists(dataNews_Whole_path):
+        test_txts_temp = fetch_20newsgroups(subset='test', remove=('headers', 'footers')).data
+        f = open(dataNews_Whole_path, "wb")
+        pickle.dump(test_txts_temp, f)
+        f.close()
 
     #   i first set the path of vocabulary's file  https://www.btelligent.com/en/blog/best-practice-working-with-paths-in-python-part-1/
-    if limit is None:
-        voc20_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\20News_Voc'
-    else:
-        voc20_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\20News_Voc_'+str(limit)
+    voc20_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\Whole_20News_Voc'
     #   and then i either create and save the vocabulary or load it.
     if not os.path.exists(voc20_path):
-        vocabulary = CountVectorizer().fit(texts_train)  # we create 20NewsGroup vocabulary
+        f = open(dataNews_Whole_path, "rb")
+        corpus = pickle.load(f)
+        f.close()
+        vocabulary = CountVectorizer().fit(corpus)  # we create 20NewsGroup vocabulary
         #   we store the vocabulary
         file = open(voc20_path, 'wb')  # we create a file to be written
         pickle.dump(vocabulary, file)  # we store to that file the vocabulary
@@ -64,50 +89,37 @@ def voc_20newsgroup(texts_train, limit=None):
 
     return vocabulary
 
+###########################################################################################################
+def voc_20newsgroup_limited():
+    #   i have to create my vocabulary for the corpus
+    dataNews_limited_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\Text_20News'
+    #   i first set the path of vocabulary's file  https://www.btelligent.com/en/blog/best-practice-working-with-paths-in-python-part-1/
+    voc20_limit_path = 'C:\\Users\kalli\PycharmProjects\master_thesis\\Limited_20News_Voc'
+    #   and then i either create and save the vocabulary or load it.
+    if not os.path.exists(voc20_limit_path):
+        f = open(dataNews_limited_path, "rb")
+        corpus_limited = pickle.load(f)
+        f.close()
+        vocabulary = CountVectorizer().fit(corpus_limited)  # we create 20NewsGroup vocabulary
+        #   we store the vocabulary
+        file = open(voc20_limit_path, 'wb')  # we create a file to be written
+        pickle.dump(vocabulary, file)  # we store to that file the vocabulary
+        file.close()  # close the file
+        # print(voc)
+    else:
+        file = open(voc20_limit_path, "rb")
+        vocabulary = pickle.load(file)  # we store to that file the vocabulary
+        file.close()
 
-def dataset_dictionary(labels, texts):
-    #   create a dictionary with labels being the keys and the texts creating a list in front of every label representing
-    #   the relative text
-    text20_dict = {}  # dictionary initialisation
-    txt_len = len(texts)  # length of dictionary
-    # print(labels)
-    for i in range(txt_len):  # creating the dictionary
-        if labels[i] not in text20_dict.keys():
-            text20_dict[labels[i]] = [texts[i]]
-        else:
-            text20_dict[labels[i]].append(texts[i])
-
-    print(text20_dict.keys())
-    #   store the dictionary  with pickle
-    file = open('dictionary_of_TrainText', 'wb')  # create the file
-    pickle.dump(text20_dict, file)
-    file.close()
-
-    return text20_dict
-
-
-# for testing purposes we need the above function with limit so
-def dataset_dictionary(labels, texts, dataset, limit=None):
-    #   create a dictionary with labels being the keys and the texts creating a list in front of every label representing
-    #   the relative text
-    text20_dict = {}  # dictionary initialisation
-    txt_len = len(texts)  # length of dictionary
-    # print(labels)
-    for i in range(txt_len):  # creating the dictionary
-        if labels[i] in text20_dict.keys():
-            text20_dict[labels[i]].append(texts[i])
-        else:
-            text20_dict[labels[i]] = [texts[i]]
+    return vocabulary
 
 
-    print(text20_dict.keys())
-    #   store the dictionary  with pickle
-    filename = "TrainText_dict_" + str(limit) + "_" + dataset
-    file = open(filename, 'wb')  # create the file
-    pickle.dump(text20_dict, file)
-    file.close()
+def MIcrosoft_Paraphrase():
+    fname = r'C:\Users\kalli\PycharmProjects\master_thesis\msr_paraphrase_test.txt'
+    with open(fname, encoding="utf8") as f:
+        content = f.readlines()
+    content.remove(content[0])
 
-    return text20_dict
 
 
 #function gia train and test set

@@ -6,7 +6,7 @@ def Ranking_Similaries_HE(ranked_sim):
     # i have to transform my ranked_similarities table into an 2d array, so that iτ can βε sortεδ and useεδ for human evaluation task
     ranked_sim = np.array(ranked_sim)
     print(ranked_sim)
-    columnIndex = 2
+    columnIndex = 0
     # Sort 2D numpy array by 2nd Column
     ranked_sim = ranked_sim[ranked_sim[:, columnIndex].argsort()]
     #print('Sorted 2D Numpy Array')
@@ -61,6 +61,7 @@ def Sampling_texts_HE(texts, k):
         cand = x[1]
         similar = x[2]
         eval_texts.append([texts[ref], texts[cand], similar])
+
 
     return eval_texts
 
