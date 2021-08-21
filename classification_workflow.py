@@ -55,7 +55,7 @@ for x in text_for_evaluation[0]:
 	print(x)
 print("Number of selected texts when k=", k, ": ", i)
 #the dictionary
-f = open("Human_Eval_dictionary.txt", "wb")  #  write results in .txt file
+f = open("Human_Eval_dictionary", "wb")  #  write results in .txt file
 pickle.dump(text_for_evaluation[1], f)
 f.close()
 
@@ -99,7 +99,7 @@ i = 0
 for x in text_for_syntax_evaluation[0]:
 	i+=1
 	print(x)
-f = open("Human_Syntax_Eval_dictionary.txt", "wb")  #  write results in .txt file
+f = open("Human_Syntax_Eval_dictionary", "wb")  #  write results in .txt file
 pickle.dump(text_for_syntax_evaluation[1], f)
 f.close()
 
