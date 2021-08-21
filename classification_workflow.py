@@ -36,6 +36,9 @@ for key,value in label_predictions[0].items():
 
 
 ranked_results = sorting_similarities(label_predictions[0])
+f = open('ranked_similarities', 'wb')  # create the file
+pickle.dump(ranked_results, f)
+f.close()
 print("those similarities ranked")
 for key,value in ranked_results.items():
 	print(key, ':', value)

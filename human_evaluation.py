@@ -33,16 +33,17 @@ def Sampling_texts_HE(texts, k, synt):
         ranked_dict = pickle.load(infile)
         infile.close()
     else:
-        infile = open('ranked_sim','rb')
+        infile = open('ranked_similarities','rb')
         ranked_dict = pickle.load(infile)
         infile.close()
 # the text similarities
     eval_texts = []
     eval_dict = {}
-
+    print("after pickle")
+    print(ranked_dict)
     for key in ranked_dict:
         ranked_sim = ranked_dict[key]
-        rs_length = len(ranked_sim)  # number of rows of the array  https://stackoverflow.com/questions/10713004/find-length-of-2d-array-python
+        rs_length = len(ranked_sim)  # number of rows of the array
 
         No_match = ranked_sim[:k]
         middle = rs_length//2
