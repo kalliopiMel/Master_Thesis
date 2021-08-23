@@ -22,12 +22,10 @@ def read20news():
         cat20 = fetch_20newsgroups(subset='test').target_names
         cat = random.sample(cat20, 5)
         print(cat)
-        f = open("categories", "wb")
-        pickle.dump(cat, f)
-        f.close()
-    file = open(cat_path, "rb")
-    categories = pickle.load(file)
-    file.close()
+        with open("categories.json", "w") as f:
+            json.dump(cat, f)
+    with open("categories.json", "r") as f:
+        categories = json.load(f)
 
     dataNews_path = 'Text_20News'
     dataNewsLab_path = 'Labels_20News'
@@ -35,7 +33,8 @@ def read20news():
         test_lbls_init = []
         test_txts_init = []
         for i in range(5):
-            test_txts_temp = fetch_20newsgroups(subset='test', remove=('headers', 'footers'), categories=[categories[i]]).data
+            test_txts_temp = fetch_20newsgroups(subset='test', remove=(
+                'headers', 'footers'), categories=[categories[i]]).data
             length = len(test_txts_temp)
             for j in range(5):
                 r = random.randint(0, length-1)
@@ -56,15 +55,15 @@ def read20news():
     fl.close()
 
     #   return the discovered information
-    return test_lbls, test_txts
-
+    return test_lbls, test_txts, categories
 
 
 def voc_20newsgroup():
     #   i have to create my vocabulary for the corpus
     dataNews_Whole_path = 'Whole_20News'
     if not os.path.exists(dataNews_Whole_path):
-        test_txts_temp = fetch_20newsgroups(subset='test', remove=('headers', 'footers')).data
+        test_txts_temp = fetch_20newsgroups(
+            subset='test', remove=('headers', 'footers')).data
         f = open(dataNews_Whole_path, "wb")
         pickle.dump(test_txts_temp, f)
         f.close()
@@ -90,6 +89,8 @@ def voc_20newsgroup():
     return vocabulary
 
 ###########################################################################################################
+
+
 def voc_20newsgroup_limited():
     #   i have to create my vocabulary for the corpus
     dataNews_limited_path = 'Text_20News'
@@ -100,7 +101,8 @@ def voc_20newsgroup_limited():
         f = open(dataNews_limited_path, "rb")
         corpus_limited = pickle.load(f)
         f.close()
-        vocabulary = CountVectorizer().fit(corpus_limited)  # we create 20NewsGroup vocabulary
+        # we create 20NewsGroup vocabulary
+        vocabulary = CountVectorizer().fit(corpus_limited)
         #   we store the vocabulary
         file = open(voc20_limit_path, 'wb')  # we create a file to be written
         pickle.dump(vocabulary, file)  # we store to that file the vocabulary
@@ -121,5 +123,4 @@ def MIcrosoft_Paraphrase():
     content.remove(content[0])
 
 
-
-#function gia train and test set
+# function gia train and test set
